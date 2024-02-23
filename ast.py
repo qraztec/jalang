@@ -1,6 +1,15 @@
 import javalang
 import json
 
+
+#lists to be made
+package = []
+imports = []
+basictypes = []
+variables = []
+classes = []
+operators = []
+
 class ASTNode:
     def __init__(self, node_type, role=None, value=None):
         self.node_type = node_type
