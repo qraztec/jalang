@@ -1,7 +1,6 @@
 import javalang
 import json
 
-
 class ASTNode:
     def __init__(self, node_type, role=None, value=None):
         self.node_type = node_type
@@ -17,6 +16,19 @@ def serialize_node(node, parent=None):
     if isinstance(node, javalang.ast.Node):
         # Create AST node
         ast_node = ASTNode(node_type=type(node).__name__)
+
+        # Assign role and value
+        if isinstance(node, javalang.tree.MethodDeclaration):
+            ast_node.role = "method_name"
+            ast_node.value = node.name
+        elif isinstance(node, javalang.tree.VariableDeclarator):
+            ast_node.role = "variable_name"
+            ast_node.value = node.name
+        elif isinstance(node, javalang.tree.Literal):
+            ast_node.role = "literal_value"
+            ast_node.value = node.value
+
+        # Add the node to its parent's children
         if parent:
             parent.add_child(ast_node)
 
@@ -36,8 +48,6 @@ def serialize_node(node, parent=None):
                 for item in value:
                     if isinstance(item, javalang.ast.Node):
                         serialize_node(item, parent=ast_node)
-            else:
-                setattr(ast_node, attr, value)
 
         return ast_node
     elif isinstance(node, list):
