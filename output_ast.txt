@@ -1,77 +1,595 @@
 {
     "node_type": "CompilationUnit",
-    "package": null,
-    "imports": [],
-    "types": [
+    "children": [
         {
-            "node_type": "ClassDeclaration",
-            "modifiers": [
-                "public"
-            ],
-            "annotations": [],
-            "documentation": null,
-            "name": "HelloWorld",
-            "body": [
+            "node_type": "CompilationUnit",
+            "role": null,
+            "value": null,
+            "children": [
                 {
-                    "node_type": "MethodDeclaration",
-                    "documentation": null,
-                    "modifiers": [
-                        "public",
-                        "static"
-                    ],
-                    "annotations": [],
-                    "type_parameters": null,
-                    "return_type": null,
-                    "name": "main",
-                    "parameters": [
+                    "node_type": "ClassDeclaration",
+                    "role": null,
+                    "value": null,
+                    "children": [
                         {
-                            "node_type": "FormalParameter",
-                            "modifiers": [],
-                            "annotations": [],
-                            "type": {
-                                "node_type": "ReferenceType",
-                                "name": "String",
-                                "dimensions": [
-                                    null
-                                ],
-                                "arguments": null,
-                                "sub_type": null
-                            },
-                            "name": "args",
-                            "varargs": false
-                        }
-                    ],
-                    "throws": null,
-                    "body": [
+                            "node_type": "MethodDeclaration",
+                            "role": "method_name",
+                            "value": "add",
+                            "children": [
+                                {
+                                    "node_type": "BasicType",
+                                    "role": null,
+                                    "value": null,
+                                    "children": []
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "ReturnStatement",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BinaryOperation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                },
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         {
-                            "node_type": "StatementExpression",
-                            "label": null,
-                            "expression": {
-                                "node_type": "MethodInvocation",
-                                "prefix_operators": [],
-                                "postfix_operators": [],
-                                "qualifier": "System.out",
-                                "selectors": [],
-                                "type_arguments": null,
-                                "arguments": [
-                                    {
-                                        "node_type": "Literal",
-                                        "prefix_operators": [],
-                                        "postfix_operators": [],
-                                        "qualifier": null,
-                                        "selectors": [],
-                                        "value": "\"Hello, World!\""
-                                    }
-                                ],
-                                "member": "println"
-                            }
+                            "node_type": "MethodDeclaration",
+                            "role": "method_name",
+                            "value": "subtract",
+                            "children": [
+                                {
+                                    "node_type": "BasicType",
+                                    "role": null,
+                                    "value": null,
+                                    "children": []
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "ReturnStatement",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BinaryOperation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                },
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "node_type": "MethodDeclaration",
+                            "role": "method_name",
+                            "value": "multiply",
+                            "children": [
+                                {
+                                    "node_type": "BasicType",
+                                    "role": null,
+                                    "value": null,
+                                    "children": []
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "ReturnStatement",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BinaryOperation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                },
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "node_type": "MethodDeclaration",
+                            "role": "method_name",
+                            "value": "divide",
+                            "children": [
+                                {
+                                    "node_type": "BasicType",
+                                    "role": null,
+                                    "value": null,
+                                    "children": []
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BasicType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "IfStatement",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BinaryOperation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                },
+                                                {
+                                                    "node_type": "Literal",
+                                                    "role": "literal_value",
+                                                    "value": "0",
+                                                    "children": []
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "node_type": "BlockStatement",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "StatementExpression",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "MethodInvocation",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": [
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "\"Error: Division by zero is not allowed.\"",
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "node_type": "ReturnStatement",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "Literal",
+                                                            "role": "literal_value",
+                                                            "value": "0",
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "ReturnStatement",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "BinaryOperation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "Cast",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "BasicType",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": []
+                                                        },
+                                                        {
+                                                            "node_type": "MemberReference",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "node_type": "MemberReference",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "node_type": "MethodDeclaration",
+                            "role": "method_name",
+                            "value": "main",
+                            "children": [
+                                {
+                                    "node_type": "FormalParameter",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "ReferenceType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "LocalVariableDeclaration",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "ReferenceType",
+                                            "role": null,
+                                            "value": null,
+                                            "children": []
+                                        },
+                                        {
+                                            "node_type": "VariableDeclarator",
+                                            "role": "variable_name",
+                                            "value": "myCalculator",
+                                            "children": [
+                                                {
+                                                    "node_type": "ClassCreator",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "ReferenceType",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "StatementExpression",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "MethodInvocation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "BinaryOperation",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "Literal",
+                                                            "role": "literal_value",
+                                                            "value": "\"Addition: 10 + 5 = \"",
+                                                            "children": []
+                                                        },
+                                                        {
+                                                            "node_type": "MethodInvocation",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": [
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "10",
+                                                                    "children": []
+                                                                },
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "5",
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "StatementExpression",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "MethodInvocation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "BinaryOperation",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "Literal",
+                                                            "role": "literal_value",
+                                                            "value": "\"Subtraction: 10 - 5 = \"",
+                                                            "children": []
+                                                        },
+                                                        {
+                                                            "node_type": "MethodInvocation",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": [
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "10",
+                                                                    "children": []
+                                                                },
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "5",
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "StatementExpression",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "MethodInvocation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "BinaryOperation",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "Literal",
+                                                            "role": "literal_value",
+                                                            "value": "\"Multiplication: 10 * 5 = \"",
+                                                            "children": []
+                                                        },
+                                                        {
+                                                            "node_type": "MethodInvocation",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": [
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "10",
+                                                                    "children": []
+                                                                },
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "5",
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "node_type": "StatementExpression",
+                                    "role": null,
+                                    "value": null,
+                                    "children": [
+                                        {
+                                            "node_type": "MethodInvocation",
+                                            "role": null,
+                                            "value": null,
+                                            "children": [
+                                                {
+                                                    "node_type": "BinaryOperation",
+                                                    "role": null,
+                                                    "value": null,
+                                                    "children": [
+                                                        {
+                                                            "node_type": "Literal",
+                                                            "role": "literal_value",
+                                                            "value": "\"Division: 10 / 5 = \"",
+                                                            "children": []
+                                                        },
+                                                        {
+                                                            "node_type": "MethodInvocation",
+                                                            "role": null,
+                                                            "value": null,
+                                                            "children": [
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "10",
+                                                                    "children": []
+                                                                },
+                                                                {
+                                                                    "node_type": "Literal",
+                                                                    "role": "literal_value",
+                                                                    "value": "5",
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 }
-            ],
-            "type_parameters": null,
-            "extends": null,
-            "implements": null
+            ]
         }
     ]
 }
