@@ -1,6 +1,6 @@
 import javalang
 import json
-
+'Test commit'
 def serialize_node(node):
     if isinstance(node, javalang.ast.Node):
         # Convert node to a dictionary including its class name and attributes
