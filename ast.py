@@ -1,29 +1,51 @@
 import javalang
 import json
-'Test commit'
-def serialize_node(node):
+
+
+class ASTNode:
+    def __init__(self, node_type, role=None, value=None):
+        self.node_type = node_type
+        self.role = role
+        self.value = value
+        self.children = []
+
+    def add_child(self, child_node):
+        self.children.append(child_node)
+
+
+def serialize_node(node, parent=None):
     if isinstance(node, javalang.ast.Node):
+        # Create AST node
+        ast_node = ASTNode(node_type=type(node).__name__)
+        if parent:
+            parent.add_child(ast_node)
+
+        # Print node information
+        print(f"Node Type: {ast_node.node_type}")
+        if ast_node.role:
+            print(f"Role: {ast_node.role}")
+        if ast_node.value:
+            print(f"Value: {ast_node.value}")
+
         # Convert node to a dictionary including its class name and attributes
-        node_dict = {'node_type': type(node).__name__}
         for attr in node.attrs:
             value = getattr(node, attr)
             if isinstance(value, javalang.ast.Node):
-                node_dict[attr] = serialize_node(value)
+                serialize_node(value, parent=ast_node)
             elif isinstance(value, list):
-                node_dict[attr] = [serialize_node(item) if isinstance(item, javalang.ast.Node) else item for item in value]
-            elif isinstance(value, set):
-                # Convert sets to lists as JSON does not support sets
-                node_dict[attr] = [serialize_node(item) if isinstance(item, javalang.ast.Node) else item for item in sorted(value)]
+                for item in value:
+                    if isinstance(item, javalang.ast.Node):
+                        serialize_node(item, parent=ast_node)
             else:
-                node_dict[attr] = value
-        return node_dict
+                setattr(ast_node, attr, value)
+
+        return ast_node
     elif isinstance(node, list):
-        return [serialize_node(item) for item in node]
+        for item in node:
+            serialize_node(item, parent=parent)
     elif isinstance(node, set):
-        # Convert sets to lists for serialization
-        return [serialize_node(item) for item in sorted(node)]
-    else:
-        return node
+        for item in node:
+            serialize_node(item, parent=parent)
 
 
 def java_file_to_ast(java_file_path, output_file_path):
@@ -32,11 +54,28 @@ def java_file_to_ast(java_file_path, output_file_path):
 
     tree = javalang.parse.parse(java_code)
 
-    serialized_tree = serialize_node(tree)
+    root_node = ASTNode(node_type="CompilationUnit")
+    serialize_node(tree, parent=root_node)
+
+    # Convert AST to a dictionary for JSON serialization
+    serialized_tree = {
+        "node_type": root_node.node_type,
+        "children": [serialize_ast_node(child) for child in root_node.children]
+    }
 
     with open(output_file_path, 'w') as output_file:
         json.dump(serialized_tree, output_file, indent=4)
 
+
+def serialize_ast_node(ast_node):
+    serialized_node = {
+        "node_type": ast_node.node_type,
+        "role": ast_node.role,
+        "value": ast_node.value,
+        "children": [serialize_ast_node(child) for child in ast_node.children]
+    }
+    return serialized_node
+
+
 # Usage example
 java_file_to_ast('HelloWorld.java', 'output_ast.txt')
-
