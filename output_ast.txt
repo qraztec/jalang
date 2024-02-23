@@ -1,0 +1,77 @@
+{
+    "node_type": "CompilationUnit",
+    "package": null,
+    "imports": [],
+    "types": [
+        {
+            "node_type": "ClassDeclaration",
+            "modifiers": [
+                "public"
+            ],
+            "annotations": [],
+            "documentation": null,
+            "name": "HelloWorld",
+            "body": [
+                {
+                    "node_type": "MethodDeclaration",
+                    "documentation": null,
+                    "modifiers": [
+                        "public",
+                        "static"
+                    ],
+                    "annotations": [],
+                    "type_parameters": null,
+                    "return_type": null,
+                    "name": "main",
+                    "parameters": [
+                        {
+                            "node_type": "FormalParameter",
+                            "modifiers": [],
+                            "annotations": [],
+                            "type": {
+                                "node_type": "ReferenceType",
+                                "name": "String",
+                                "dimensions": [
+                                    null
+                                ],
+                                "arguments": null,
+                                "sub_type": null
+                            },
+                            "name": "args",
+                            "varargs": false
+                        }
+                    ],
+                    "throws": null,
+                    "body": [
+                        {
+                            "node_type": "StatementExpression",
+                            "label": null,
+                            "expression": {
+                                "node_type": "MethodInvocation",
+                                "prefix_operators": [],
+                                "postfix_operators": [],
+                                "qualifier": "System.out",
+                                "selectors": [],
+                                "type_arguments": null,
+                                "arguments": [
+                                    {
+                                        "node_type": "Literal",
+                                        "prefix_operators": [],
+                                        "postfix_operators": [],
+                                        "qualifier": null,
+                                        "selectors": [],
+                                        "value": "\"Hello, World!\""
+                                    }
+                                ],
+                                "member": "println"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "type_parameters": null,
+            "extends": null,
+            "implements": null
+        }
+    ]
+}
