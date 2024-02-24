@@ -4,10 +4,14 @@ import json
 # Lists to be made
 package = []
 imports = []
-basictypes = []
+datatypes = []
 variables = []
 classes = []
 operators = []
+reserved_word = []
+identifiers = []
+assignments = []
+literals = []
 
 
 class ASTNode:
@@ -37,18 +41,21 @@ def serialize_node(node, parent=None, visited=None):
         ast_node = ASTNode(node_type=type(node).__name__)
 
         # Assign role and value
-        if isinstance(node, javalang.tree.PackageDeclaration):
-            package.append(node.name)
-        elif isinstance(node, javalang.tree.Import):
-            imports.append(node.path)
-        elif isinstance(node, javalang.tree.BasicType):
-            basictypes.append(node.name)
-        elif isinstance(node, javalang.tree.VariableDeclarator):
-            variables.append(node.name)
-        elif isinstance(node, javalang.tree.ClassDeclaration):
-            classes.append(node.name)
+        #if isinstance(node, javalang.tree.PackageDeclaration):
+      #      package.append(node.name)
+      #  elif isinstance(node, javalang.tree.Import):
+     #       imports.append(node.path)
+        if isinstance(node, javalang.tree.BasicType):
+            datatypes.append(node.name)
+        elif isinstance(node, javalang.tree.Literal):
+            literals.append(node.value)
+        elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node, javalang.tree.ClassDeclaration) or isinstance(node, javalang.tree.MethodDeclaration):
+            identifiers.append(node.name)
         elif isinstance(node, javalang.tree.BinaryOperation):
             operators.append(node.operator)
+        elif isinstance(node, javalang.tree.Assignment):
+            assignments.append(node.operator)
+        #elif isinstance(node, javalang.tree.)
 
         # Add the node to its parent's children
         if parent:
@@ -82,7 +89,10 @@ root_node = java_file_to_ast('HelloWorld.java')
 # Print collected information sorted
 print("Package:", package)
 print("Imports:", imports)
-print("Basic Types:", basictypes)
+print("Data Types:", datatypes)
 print("Variables:", variables)
 print("Classes:", classes)
 print("Operators:", operators)
+print("Identifiers:", identifiers)
+print("Assignments:", assignments)
+print("Literals:", literals)

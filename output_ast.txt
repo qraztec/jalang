@@ -18,8 +18,8 @@
                             "children": [
                                 {
                                     "node_type": "BasicType",
-                                    "role": null,
-                                    "value": null,
+                                    "role": "basic_type_name",
+                                    "value": "int",
                                     "children": []
                                 },
                                 {
@@ -29,8 +29,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -42,8 +42,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -83,8 +83,8 @@
                             "children": [
                                 {
                                     "node_type": "BasicType",
-                                    "role": null,
-                                    "value": null,
+                                    "role": "basic_type_name",
+                                    "value": "int",
                                     "children": []
                                 },
                                 {
@@ -94,8 +94,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -107,8 +107,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -148,8 +148,8 @@
                             "children": [
                                 {
                                     "node_type": "BasicType",
-                                    "role": null,
-                                    "value": null,
+                                    "role": "basic_type_name",
+                                    "value": "int",
                                     "children": []
                                 },
                                 {
@@ -159,8 +159,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -172,8 +172,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -213,8 +213,8 @@
                             "children": [
                                 {
                                     "node_type": "BasicType",
-                                    "role": null,
-                                    "value": null,
+                                    "role": "basic_type_name",
+                                    "value": "double",
                                     "children": []
                                 },
                                 {
@@ -224,8 +224,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -237,8 +237,8 @@
                                     "children": [
                                         {
                                             "node_type": "BasicType",
-                                            "role": null,
-                                            "value": null,
+                                            "role": "basic_type_name",
+                                            "value": "int",
                                             "children": []
                                         }
                                     ]
@@ -326,8 +326,8 @@
                                                     "children": [
                                                         {
                                                             "node_type": "BasicType",
-                                                            "role": null,
-                                                            "value": null,
+                                                            "role": "basic_type_name",
+                                                            "value": "double",
                                                             "children": []
                                                         },
                                                         {
