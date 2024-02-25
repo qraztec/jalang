@@ -49,12 +49,30 @@ def serialize_node(node, parent=None, visited=None):
             datatypes.append(node.name)
         elif isinstance(node, javalang.tree.Literal):
             literals.append(node.value)
-        elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node, javalang.tree.ClassDeclaration) or isinstance(node, javalang.tree.MethodDeclaration):
+        elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node, javalang.tree.ClassDeclaration) or isinstance(node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
             identifiers.append(node.name)
         elif isinstance(node, javalang.tree.BinaryOperation):
             operators.append(node.operator)
         elif isinstance(node, javalang.tree.Assignment):
-            assignments.append(node.operator)
+            assignments.append(node.type)
+            lhs = node.expressionl
+            rhs = node.value
+            if (isinstance(lhs, javalang.tree.MemberReference)):
+                identifiers.append(lhs.member)
+            if (isinstance(rhs, javalang.tree.MemberReference)):
+                identifiers.append(rhs.member)
+        elif isinstance(node, javalang.tree.ReturnStatement):
+            expression = node.expression
+
+            if (isinstance(expression, javalang.tree.BinaryOperation)):
+                left = expression.operandl
+                right = expression.operandr
+                if (isinstance(left, javalang.tree.MemberReference)):
+                    identifiers.append(left.member)
+                if (isinstance(right, javalang.tree.MemberReference)):
+                    identifiers.append(right.member)
+              #  identifiers.append(expression.operandr)
+
         #elif isinstance(node, javalang.tree.)
 
         # Add the node to its parent's children

@@ -3,6 +3,7 @@ public class HelloWorld {
 
 	// Method to add two numbers
     public int add(int a, int b) {
+    a = b;
         return a + b;
     }
 
