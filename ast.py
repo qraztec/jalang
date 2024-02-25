@@ -2,13 +2,11 @@ import javalang
 import json
 
 # Lists to be made
-package = []
-imports = []
+#package = []
+#imports = []
 datatypes = []
-variables = []
-classes = []
 operators = []
-reserved_word = []
+reserved_words = []
 identifiers = []
 assignments = []
 literals = []
@@ -50,7 +48,22 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.Literal):
             literals.append(node.value)
         elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node, javalang.tree.ClassDeclaration) or isinstance(node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
+            if hasattr(node, 'modifiers'):
+                for modifier in node.modifiers:
+                    if modifier in {"public", "private", "protected"}:
+                        reserved_words.append(modifier)
             identifiers.append(node.name)
+
+            if hasattr(node, 'modifiers'):
+                if "static" in node.modifiers:
+                    reserved_words.append("static")
+            if hasattr(node, 'return_type'):
+                if node.return_type is None:
+                    reserved_words.append("void")
+
+
+          #  if isinstance(node.return_type, javalang.tree.BasicType) and node.return_type.name == "void":
+           #     reserved_words.append("void")
         elif isinstance(node, javalang.tree.BinaryOperation):
             operators.append(node.operator)
         elif isinstance(node, javalang.tree.Assignment):
@@ -62,6 +75,7 @@ def serialize_node(node, parent=None, visited=None):
             if (isinstance(rhs, javalang.tree.MemberReference)):
                 identifiers.append(rhs.member)
         elif isinstance(node, javalang.tree.ReturnStatement):
+            reserved_words.append("return")
             expression = node.expression
 
             if (isinstance(expression, javalang.tree.BinaryOperation)):
@@ -71,7 +85,10 @@ def serialize_node(node, parent=None, visited=None):
                     identifiers.append(left.member)
                 if (isinstance(right, javalang.tree.MemberReference)):
                     identifiers.append(right.member)
-              #  identifiers.append(expression.operandr)
+        elif isinstance(node, javalang.tree.IfStatement):
+            reserved_words.append("if")
+        #detects modifiers such as public, private, or protected
+
 
         #elif isinstance(node, javalang.tree.)
 
@@ -105,12 +122,11 @@ def java_file_to_ast(java_file_path):
 root_node = java_file_to_ast('HelloWorld.java')
 
 # Print collected information sorted
-print("Package:", package)
-print("Imports:", imports)
+#print("Package:", package)
+#print("Imports:", imports)
 print("Data Types:", datatypes)
-print("Variables:", variables)
-print("Classes:", classes)
 print("Operators:", operators)
+print("Reserved Words:", reserved_words)
 print("Identifiers:", identifiers)
 print("Assignments:", assignments)
 print("Literals:", literals)
