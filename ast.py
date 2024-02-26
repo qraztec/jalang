@@ -1,9 +1,7 @@
 import javalang
-import json
+import re
 
 # Lists to be made
-#package = []
-#imports = []
 datatypes = []
 operators = []
 reserved_words = []
@@ -24,7 +22,7 @@ class ASTNode:
 
 
 def serialize_node(node, parent=None, visited=None):
-    global package, imports, basictypes, variables, classes, operators
+    global operators, reserved_words, identifiers, assignments, literals
 
     if visited is None:
         visited = set()
@@ -35,14 +33,8 @@ def serialize_node(node, parent=None, visited=None):
     visited.add(node)
 
     if isinstance(node, javalang.ast.Node):
-        # Create AST node
         ast_node = ASTNode(node_type=type(node).__name__)
 
-        # Assign role and value
-        #if isinstance(node, javalang.tree.PackageDeclaration):
-      #      package.append(node.name)
-      #  elif isinstance(node, javalang.tree.Import):
-     #       imports.append(node.path)
         if isinstance(node, javalang.tree.BasicType):
             datatypes.append(node.name)
         elif isinstance(node, javalang.tree.Literal):
@@ -60,10 +52,6 @@ def serialize_node(node, parent=None, visited=None):
             if hasattr(node, 'return_type'):
                 if node.return_type is None:
                     reserved_words.append("void")
-
-
-          #  if isinstance(node.return_type, javalang.tree.BasicType) and node.return_type.name == "void":
-           #     reserved_words.append("void")
         elif isinstance(node, javalang.tree.BinaryOperation):
             operators.append(node.operator)
         elif isinstance(node, javalang.tree.Assignment):
@@ -87,16 +75,10 @@ def serialize_node(node, parent=None, visited=None):
                     identifiers.append(right.member)
         elif isinstance(node, javalang.tree.IfStatement):
             reserved_words.append("if")
-        #detects modifiers such as public, private, or protected
 
-
-        #elif isinstance(node, javalang.tree.)
-
-        # Add the node to its parent's children
         if parent:
             parent.add_child(ast_node)
 
-        # Convert node to a dictionary including its class name and attributes
         for _, child_node in node.filter(javalang.ast.Node):
             serialize_node(child_node, parent=ast_node, visited=visited)
 
@@ -104,6 +86,17 @@ def serialize_node(node, parent=None, visited=None):
     elif isinstance(node, list):
         for item in node:
             serialize_node(item, parent=parent, visited=visited)
+
+
+def extract_datatypes_from_comment(comment):
+    """
+    Extract basic data types from Java documentation comment.
+    """
+    # Regular expression to match data type declarations
+    pattern = r'@(?:param|return)\s+(\w+(\[\])?)\s+\w+'
+
+    matches = re.findall(pattern, comment)
+    return matches
 
 
 def java_file_to_ast(java_file_path):
@@ -121,9 +114,20 @@ def java_file_to_ast(java_file_path):
 # Usage example
 root_node = java_file_to_ast('HelloWorld.java')
 
+# Extract data types from Java documentation comments
+doc_comment = """
+/**
+ * This is a sample method.
+ * @param args An array of strings.
+ * @return An integer value.
+ */
+"""
+datatypes_from_comment = extract_datatypes_from_comment(doc_comment)
+
+# Add detected data types to the datatypes list
+datatypes.extend(datatypes_from_comment)
+
 # Print collected information sorted
-#print("Package:", package)
-#print("Imports:", imports)
 print("Data Types:", datatypes)
 print("Operators:", operators)
 print("Reserved Words:", reserved_words)
