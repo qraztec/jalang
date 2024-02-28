@@ -88,12 +88,12 @@ def serialize_node(node, parent=None, visited=None):
             serialize_node(item, parent=parent, visited=visited)
 
 
-def extract_datatypes_from_comment(comment):
+def extract_identifiers_from_comment(comment):
     """
-    Extract basic data types from Java documentation comment.
+    Extract identifiers from Java documentation comment.
     """
-    # Regular expression to match data type declarations
-    pattern = r'@(?:param|return)\s+(\w+(\[\])?)\s+\w+'
+    # Regular expression to match identifier declarations
+    pattern = r'@(?:param|return)\s+\w+\s+(\w+)'
 
     matches = re.findall(pattern, comment)
     return matches
@@ -114,7 +114,7 @@ def java_file_to_ast(java_file_path):
 # Usage example
 root_node = java_file_to_ast('HelloWorld.java')
 
-# Extract data types from Java documentation comments
+# Extract identifiers from Java documentation comments
 doc_comment = """
 /**
  * This is a sample method.
@@ -122,10 +122,10 @@ doc_comment = """
  * @return An integer value.
  */
 """
-datatypes_from_comment = extract_datatypes_from_comment(doc_comment)
+identifiers_from_comment = extract_identifiers_from_comment(doc_comment)
 
-# Add detected data types to the datatypes list
-datatypes.extend(datatypes_from_comment)
+# Add detected identifiers to the identifiers list
+identifiers.extend(identifiers_from_comment)
 
 # Print collected information sorted
 print("Data Types:", datatypes)
