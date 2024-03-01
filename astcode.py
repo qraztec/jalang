@@ -8,6 +8,7 @@ JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
 
 # Lists to be made
 packages = []
+packages_id = []
 datatypes = []
 operators = []
 reserved_words = []
@@ -28,6 +29,41 @@ class ASTNode:
 
     def add_child(self, child_node):
         self.children.append(child_node)
+
+#fetch java documentation from internet and check if can request it
+def fetch_java_doc(class_name):
+    url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.','/')}.html"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            print("Worked")
+            return BeautifulSoup(response.text, 'html.parser')
+        else:
+            print(f"Failed to fetch JavaDoc for {class_name}")
+    except requests.RequestException as e:
+        print(f"Request failed: {e}")
+    return None
+
+#get method description from specific java doc online
+def extract_method_description(soup, method_name, class_name):
+    method_anchor = soup.find(lambda tag: tag.name == "h4" and tag.text == "nextInt")
+
+    if method_anchor:
+        print("success")
+
+        common_parent = method_anchor.find_parent().find_parent()
+        description = method_anchor.find_next('div', class_ ="block")
+        description_text = ""
+        if description:
+
+            for child in description.children:
+                if child.name == "<p>":
+                    break
+                if child.string:
+                    description_text += child.string
+            return description_text
+        else:
+            return "Description not found."
 
 
 def serialize_node(node, parent=None, visited=None):
@@ -87,6 +123,12 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.Import):
             import_path = node.path
             packages.append(import_path)
+            package_parts = import_path.split(".")
+            if len(package_parts) > 1:
+                package_name = package_parts[-2]
+                packages_id.append(package_name)
+            print(package_name)
+
 
         else:
             # Attempt to handle unrecognized node types
@@ -99,6 +141,10 @@ def serialize_node(node, parent=None, visited=None):
                 methods.append(node.member)
             elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier in identifiers:
                 javadoc_methods.append(node.member)
+                soup = fetch_java_doc(packages[0])
+                if soup:
+                    description = extract_method_description(soup, node.member, packages[0])
+                    javadoc_methods.append(description)
 
 
 
@@ -167,3 +213,4 @@ print("Literals:", literals)
 print("Methods:", methods)
 print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
+print("Packages Id: ", packages_id)
