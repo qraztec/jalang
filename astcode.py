@@ -144,7 +144,9 @@ def serialize_node(node, parent=None, visited=None):
                 soup = fetch_java_doc(packages[0])
                 if soup:
                     description = extract_method_description(soup, node.member, packages[0])
-                    javadoc_methods.append(description)
+                    text = f"{javadoc_methods.pop()} - {description}"
+                   # javadoc_methods.pop()
+                    javadoc_methods.append(text)
 
 
 
