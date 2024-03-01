@@ -36,7 +36,7 @@ def fetch_java_doc(class_name):
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            print("Worked")
+         #   print("Worked")
             return BeautifulSoup(response.text, 'html.parser')
         else:
             print(f"Failed to fetch JavaDoc for {class_name}")
@@ -49,7 +49,7 @@ def extract_method_description(soup, method_name, class_name):
     method_anchor = soup.find(lambda tag: tag.name == "h4" and tag.text == "nextInt")
 
     if method_anchor:
-        print("success")
+      #  print("success")
 
         common_parent = method_anchor.find_parent().find_parent()
         description = method_anchor.find_next('div', class_ ="block")
@@ -127,7 +127,7 @@ def serialize_node(node, parent=None, visited=None):
             if len(package_parts) > 1:
                 package_name = package_parts[-2]
                 packages_id.append(package_name)
-            print(package_name)
+         #   print(package_name)
 
 
         else:
@@ -215,4 +215,4 @@ print("Literals:", literals)
 print("Methods:", methods)
 print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
-print("Packages Id: ", packages_id)
+#print("Packages Id: ", packages_id)
