@@ -31,6 +31,7 @@ public class HelloWorld {
       //  Calculator myCalculator = new Calculator();
         Scanner scan = new Scanner(System.in);
         int a = scan.nextInt();
+        String text = scan.next();
 
         System.out.println("Addition: 10 + 5 = " + add(a, 5));
         System.out.println("Subtraction: 10 - 5 = " + subtract(10, 5));

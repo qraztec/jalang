@@ -46,7 +46,7 @@ def fetch_java_doc(class_name):
 
 #get method description from specific java doc online
 def extract_method_description(soup, method_name, class_name):
-    method_anchor = soup.find(lambda tag: tag.name == "h4" and tag.text == "nextInt")
+    method_anchor = soup.find(lambda tag: tag.name == "h4" and tag.text == f"{method_name}")
 
     if method_anchor:
       #  print("success")
