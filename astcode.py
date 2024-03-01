@@ -1,13 +1,22 @@
+import requests
+from bs4 import BeautifulSoup
 import javalang
 import re
 
+JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
+
+
 # Lists to be made
+packages = []
 datatypes = []
 operators = []
 reserved_words = []
 identifiers = []
 assignments = []
 literals = []
+methods = []
+javadocs = []
+javadoc_methods = []
 
 
 class ASTNode:
@@ -75,6 +84,26 @@ def serialize_node(node, parent=None, visited=None):
                     identifiers.append(right.member)
         elif isinstance(node, javalang.tree.IfStatement):
             reserved_words.append("if")
+        elif isinstance(node, javalang.tree.Import):
+            import_path = node.path
+            packages.append(import_path)
+
+        else:
+            # Attempt to handle unrecognized node types
+            # Example: Attempt to extract 'name' attribute if present
+            if hasattr(node, 'name'):
+
+                javadocs.append(node.name)
+
+            elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier not in identifiers:
+                methods.append(node.member)
+            elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier in identifiers:
+                javadoc_methods.append(node.member)
+
+
+
+
+
 
         if parent:
             parent.add_child(ast_node)
@@ -128,9 +157,13 @@ identifiers_from_comment = extract_identifiers_from_comment(doc_comment)
 identifiers.extend(identifiers_from_comment)
 
 # Print collected information sorted
+print("Packages: ", packages)
 print("Data Types:", datatypes)
 print("Operators:", operators)
 print("Reserved Words:", reserved_words)
 print("Identifiers:", identifiers)
 print("Assignments:", assignments)
 print("Literals:", literals)
+print("Methods:", methods)
+print("Javadoc: ", javadocs)
+print("Javadoc Methods: ", javadoc_methods)
