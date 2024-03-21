@@ -321,7 +321,7 @@
                                             "children": [
                                                 {
                                                     "node_type": "Cast",
-                                                    "role": null,
+                                                    "role": ull,
                                                     "value": null,
                                                     "children": [
                                                         {

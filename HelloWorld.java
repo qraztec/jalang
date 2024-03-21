@@ -1,8 +1,10 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+
 public class HelloWorld {
 
 	// Method to add two numbers
-    public static int add(int a, int b) {
+    public static int addFunc(int a, int b) {
     a = b;
         return a + b;
     }
@@ -28,12 +30,15 @@ public class HelloWorld {
 
     // Main method to execute some calculations
     public static void main(String[] args) {
-      //  Calculator myCalculator = new Calculator();
+    //    Calculator myCalculator = new Calculator();
         Scanner scan = new Scanner(System.in);
         int a = scan.nextInt();
         String text = scan.next();
+        ArrayList<Integer> arr = new ArrayList<>();
+        arr.add(addFunc(a,6));
 
-        System.out.println("Addition: 10 + 5 = " + add(a, 5));
+
+        System.out.println("Addition: 10 + 5 = " + addFunc(a, 5));
         System.out.println("Subtraction: 10 - 5 = " + subtract(10, 5));
         System.out.println("Multiplication: 10 * 5 = " + multiply(10, 5));
         System.out.println("Division: 10 / 5 = " + divide(10, 5));

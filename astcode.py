@@ -19,6 +19,10 @@ methods = []
 javadocs = []
 javadoc_methods = []
 
+#mapping dictionaries
+first_dict = dict()
+second_dict = dict()
+
 
 class ASTNode:
     def __init__(self, node_type, role=None, value=None):
@@ -82,6 +86,7 @@ def serialize_node(node, parent=None, visited=None):
 
         if isinstance(node, javalang.tree.BasicType):
             datatypes.append(node.name)
+            ast_node.value = node.name
         elif isinstance(node, javalang.tree.Literal):
             literals.append(node.value)
         elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node, javalang.tree.ClassDeclaration) or isinstance(node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
@@ -99,6 +104,7 @@ def serialize_node(node, parent=None, visited=None):
                     reserved_words.append("void")
         elif isinstance(node, javalang.tree.BinaryOperation):
             operators.append(node.operator)
+            ast_node.value = node.operator
         elif isinstance(node, javalang.tree.Assignment):
             assignments.append(node.type)
             lhs = node.expressionl
@@ -120,25 +126,34 @@ def serialize_node(node, parent=None, visited=None):
                     identifiers.append(right.member)
         elif isinstance(node, javalang.tree.IfStatement):
             reserved_words.append("if")
+        #gets packages
+
         elif isinstance(node, javalang.tree.Import):
             import_path = node.path
             packages.append(import_path)
+
             package_parts = import_path.split(".")
             if len(package_parts) > 1:
                 package_name = package_parts[-2]
+                package_nameAlt = package_parts[-1]
+                javadocs.append(package_nameAlt)
+                first_dict[package_nameAlt] = import_path
                 packages_id.append(package_name)
-         #   print(package_name)
+                #print(package_name)
 
+        # gets methods from the packages, or any extraneous attributes from javadocs
 
         else:
             # Attempt to handle unrecognized node types
             # Example: Attempt to extract 'name' attribute if present
-            if hasattr(node, 'name'):
+           # if hasattr(node, 'name'):
 
-                javadocs.append(node.name)
 
-            elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier not in identifiers:
+                #javadocs.append(node.name)
+
+            if isinstance(node, javalang.tree.MethodInvocation) and node.qualifier not in identifiers:
                 methods.append(node.member)
+            
             elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier in identifiers:
                 javadoc_methods.append(node.member)
                 soup = fetch_java_doc(packages[0])
@@ -147,6 +162,10 @@ def serialize_node(node, parent=None, visited=None):
                     text = f"{javadoc_methods.pop()} - {description}"
                    # javadoc_methods.pop()
                     javadoc_methods.append(text)
+
+
+
+
 
 
 
@@ -191,6 +210,7 @@ def java_file_to_ast(java_file_path):
 # Usage example
 root_node = java_file_to_ast('HelloWorld.java')
 
+
 # Extract identifiers from Java documentation comments
 doc_comment = """
 /**
@@ -215,4 +235,5 @@ print("Literals:", literals)
 print("Methods:", methods)
 print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
+print("First Dict: ", first_dict)
 #print("Packages Id: ", packages_id)
