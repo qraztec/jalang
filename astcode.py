@@ -89,12 +89,49 @@ def serialize_node(node, parent=None, visited=None):
             ast_node.value = node.name
         elif isinstance(node, javalang.tree.Literal):
             literals.append(node.value)
+        elif isinstance(node, javalang.tree.Import):
+            import_path = node.path
+            packages.append(import_path)
+            print(import_path)
+            package_parts = import_path.split(".")
+            if len(package_parts) > 1:
+                package_name = package_parts[-2]
+                package_nameAlt = package_parts[-1]
+                javadocs.append(package_nameAlt)
+                first_dict[package_nameAlt] = import_path
+                packages_id.append(package_name)
+                #print(package_name)
+        elif isinstance(node, javalang.tree.LocalVariableDeclaration):
+           # identifiers.append(node.name)  # adds all identifiers
+
+            var_type = node.type.name
+            if var_type in first_dict:
+                for declarator in node.declarators:
+                    var_name = declarator.name
+                    identifiers.append(var_name)
+
+               # if var_type in first_dict:
+                  #  second_dict[var_name] = var_type
+                  #  var_type = first_dict[var_type]
+                    second_dict[var_name] = var_type
+            '''
+            if hasattr(node, 'type'):
+                #print(node.name)
+                var_type = str(node.type)
+                if var_type in first_dict:
+                    var_type = first_dict[var_type]
+                    second_dict[node.name] = var_type.name
+            '''
         elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node, javalang.tree.ClassDeclaration) or isinstance(node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
             if hasattr(node, 'modifiers'):
                 for modifier in node.modifiers:
                     if modifier in {"public", "private", "protected"}:
                         reserved_words.append(modifier)
-            identifiers.append(node.name)
+
+           # identifiers.append(node.name) #adds all identifiers
+
+
+
 
             if hasattr(node, 'modifiers'):
                 if "static" in node.modifiers:
@@ -111,52 +148,49 @@ def serialize_node(node, parent=None, visited=None):
             rhs = node.value
             if (isinstance(lhs, javalang.tree.MemberReference)):
                 identifiers.append(lhs.member)
+
             if (isinstance(rhs, javalang.tree.MemberReference)):
                 identifiers.append(rhs.member)
         elif isinstance(node, javalang.tree.ReturnStatement):
             reserved_words.append("return")
             expression = node.expression
-
+            #basic variables
             if (isinstance(expression, javalang.tree.BinaryOperation)):
                 left = expression.operandl
                 right = expression.operandr
+
                 if (isinstance(left, javalang.tree.MemberReference)):
                     identifiers.append(left.member)
+
                 if (isinstance(right, javalang.tree.MemberReference)):
                     identifiers.append(right.member)
+
         elif isinstance(node, javalang.tree.IfStatement):
             reserved_words.append("if")
         #gets packages
 
-        elif isinstance(node, javalang.tree.Import):
-            import_path = node.path
-            packages.append(import_path)
-
-            package_parts = import_path.split(".")
-            if len(package_parts) > 1:
-                package_name = package_parts[-2]
-                package_nameAlt = package_parts[-1]
-                javadocs.append(package_nameAlt)
-                first_dict[package_nameAlt] = import_path
-                packages_id.append(package_name)
-                #print(package_name)
 
         # gets methods from the packages, or any extraneous attributes from javadocs
 
         else:
             # Attempt to handle unrecognized node types
             # Example: Attempt to extract 'name' attribute if present
-           # if hasattr(node, 'name'):
+            if hasattr(node, 'name'):
 
 
-                #javadocs.append(node.name)
+                javadocs.append(node.name)
 
-            if isinstance(node, javalang.tree.MethodInvocation) and node.qualifier not in identifiers:
+            elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier not in identifiers:
                 methods.append(node.member)
             
             elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier in identifiers:
+                print("qualifier", node.qualifier)
+                qualif = node.qualifier
                 javadoc_methods.append(node.member)
-                soup = fetch_java_doc(packages[0])
+                #fetches online description
+                first_word = second_dict[qualif]
+                second_word = first_dict[first_word]
+                soup = fetch_java_doc(second_word)
                 if soup:
                     description = extract_method_description(soup, node.member, packages[0])
                     text = f"{javadoc_methods.pop()} - {description}"
@@ -236,4 +270,5 @@ print("Methods:", methods)
 print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
 print("First Dict: ", first_dict)
+print("Second Dict: ", second_dict)
 #print("Packages Id: ", packages_id)
