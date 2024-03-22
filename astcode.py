@@ -2,15 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import javalang
 import re
-from transformers import pipeline
-import sumy
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lsa import LsaSummarizer
-from sumy.summarizers.luhn import LuhnSummarizer
-#import torch
-from summarizer import Summarizer
-from pprint import pprint
+
 
 
 
