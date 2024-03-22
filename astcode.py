@@ -1,15 +1,11 @@
+i = 0
+
 import requests
 from bs4 import BeautifulSoup
 import javalang
 import re
 
-
-
-
-
-
 JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
-
 
 # Lists to be made
 packages = []
@@ -24,7 +20,7 @@ methods = []
 javadocs = []
 javadoc_methods = []
 
-#mapping dictionaries
+# mapping dictionaries
 first_dict = dict()
 second_dict = dict()
 
@@ -39,13 +35,14 @@ class ASTNode:
     def add_child(self, child_node):
         self.children.append(child_node)
 
-#fetch java documentation from internet and check if can request it
+
+# fetch java documentation from internet and check if can request it
 def fetch_java_doc(class_name):
-    url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.','/')}.html"
+    url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.', '/')}.html"
     try:
         response = requests.get(url)
         if response.status_code == 200:
-         #   print("Worked")
+            #   print("Worked")
             return BeautifulSoup(response.text, 'html.parser')
         else:
             print(f"Failed to fetch JavaDoc for {class_name}")
@@ -53,15 +50,16 @@ def fetch_java_doc(class_name):
         print(f"Request failed: {e}")
     return None
 
-#get method description from specific java doc online
+
+# get method description from specific java doc online
 def extract_method_description(soup, method_name, class_name):
     method_anchor = soup.find(lambda tag: tag.name == "h4" and tag.text == f"{method_name}")
 
     if method_anchor:
-      #  print("success")
+        #  print("success")
 
         common_parent = method_anchor.find_parent().find_parent()
-        description = method_anchor.find_next('div', class_ ="block")
+        description = method_anchor.find_next('div', class_="block")
         description_text = ""
         if description:
 
@@ -97,7 +95,7 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.Import):
             import_path = node.path
             packages.append(import_path)
-            #print(import_path)
+            # print(import_path)
             package_parts = import_path.split(".")
             if len(package_parts) > 1:
                 package_name = package_parts[-2]
@@ -105,9 +103,9 @@ def serialize_node(node, parent=None, visited=None):
                 javadocs.append(package_nameAlt)
                 first_dict[package_nameAlt] = import_path
                 packages_id.append(package_name)
-                #print(package_name)
+                # print(package_name)
         elif isinstance(node, javalang.tree.LocalVariableDeclaration):
-           # identifiers.append(node.name)  # adds all identifiers
+            # identifiers.append(node.name)  # adds all identifiers
 
             var_type = node.type.name
             if var_type in first_dict:
@@ -115,9 +113,9 @@ def serialize_node(node, parent=None, visited=None):
                     var_name = declarator.name
                     identifiers.append(var_name)
 
-               # if var_type in first_dict:
-                  #  second_dict[var_name] = var_type
-                  #  var_type = first_dict[var_type]
+                    # if var_type in first_dict:
+                    #  second_dict[var_name] = var_type
+                    #  var_type = first_dict[var_type]
                     second_dict[var_name] = var_type
             '''
             if hasattr(node, 'type'):
@@ -127,16 +125,15 @@ def serialize_node(node, parent=None, visited=None):
                     var_type = first_dict[var_type]
                     second_dict[node.name] = var_type.name
             '''
-        elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node, javalang.tree.ClassDeclaration) or isinstance(node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
+        elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node,
+                                                                              javalang.tree.ClassDeclaration) or isinstance(
+                node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
             if hasattr(node, 'modifiers'):
                 for modifier in node.modifiers:
                     if modifier in {"public", "private", "protected"}:
                         reserved_words.append(modifier)
 
-           # identifiers.append(node.name) #adds all identifiers
-
-
-
+            # identifiers.append(node.name) #adds all identifiers
 
             if hasattr(node, 'modifiers'):
                 if "static" in node.modifiers:
@@ -159,7 +156,7 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.ReturnStatement):
             reserved_words.append("return")
             expression = node.expression
-            #basic variables
+            # basic variables
             if (isinstance(expression, javalang.tree.BinaryOperation)):
                 left = expression.operandl
                 right = expression.operandr
@@ -172,8 +169,7 @@ def serialize_node(node, parent=None, visited=None):
 
         elif isinstance(node, javalang.tree.IfStatement):
             reserved_words.append("if")
-        #gets packages
-
+        # gets packages
 
         # gets methods from the packages, or any extraneous attributes from javadocs
 
@@ -182,31 +178,28 @@ def serialize_node(node, parent=None, visited=None):
             # Example: Attempt to extract 'name' attribute if present
             if hasattr(node, 'name'):
 
-
                 javadocs.append(node.name)
 
             elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier not in identifiers:
                 methods.append(node.member)
-            
+
             elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier in identifiers:
-                #print("qualifier", node.qualifier)
+                # print("qualifier", node.qualifier)
                 qualif = node.qualifier
                 javadoc_methods.append(node.member)
-                #fetches online description
+                # fetches online description
                 first_word = second_dict[qualif]
 
                 second_word = first_dict[first_word]
                 soup = fetch_java_doc(second_word)
                 if soup:
                     description = extract_method_description(soup, node.member, packages[0])
-                    data = description.replace('\n',"")
+                    data = description.replace('\n', "")
                     main_part = data.split('.', 1)[0]
 
-                   # text = f"{javadoc_methods.pop()} - {description}"
+                    # text = f"{javadoc_methods.pop()} - {description}"
                     javadoc_methods.pop()
                     javadoc_methods.append(f"{node.member} - {first_word} - {main_part}")
-
-
 
         if parent:
             parent.add_child(ast_node)
@@ -246,7 +239,6 @@ def java_file_to_ast(java_file_path):
 # Usage example
 root_node = java_file_to_ast('HelloWorld.java')
 
-
 # Extract identifiers from Java documentation comments
 doc_comment = """
 /**
@@ -269,8 +261,81 @@ print("Identifiers:", identifiers)
 print("Assignments:", assignments)
 print("Literals:", literals)
 print("Methods:", methods)
-#print("Javadoc: ", javadocs)
+# print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
-#print("First Dict: ", first_dict)
-#print("Second Dict: ", second_dict)
-#print("Packages Id: ", packages_id)
+# print("First Dict: ", first_dict)
+# print("Second Dict: ", second_dict)
+# print("Packages Id: ", packages_id)
+
+from g4f.client import Client
+
+client = Client()
+messages = [
+    {"role": "system",
+     "content": "You are attempting to classify the inputted description into one of the 31 labels based off of the similarity to it."},
+    {"role": "system",
+     "content": "As you guess this, your final response should only be one concise paragraph with the label chosen and why."},
+    {"role": "system",
+     "content": "Answer in the format of: Label: given label of this description"
+                                        "Reason: reason why this label was chosen"}
+]
+
+
+def ask_gpt(class_description, label_options):
+    # Construct the prompt with the object description and option descriptions
+    prompt = "Does this class description: "
+    prompt += f"Object Description: {class_description}\n"
+    prompt += " more fit with which of these options: "
+    prompt += f"Options: {label_options}\n"
+    messages.append({"role": "user", "content": prompt})
+    response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=messages,
+        stream=True
+    )
+    return response
+
+
+# Javax.sql description
+description = "Provides the API for server side data source access and processing from the JavaTM programming language."
+# Labels and their descriptions
+options = {
+    "Application": "third party apps or plugins for specific use attached to the system",
+    "Application Performance Manager": "monitors performance or benchmark",
+    "Big Data": "API's that deal with storing large amounts of data. with variety of formats",
+    "Cloud": "APUs for software and services that run on the Internet",
+    "Computer Graphics": "Manipulating visual content",
+    "Data Structure": "Data structures patterns (e.g., collections, lists, trees)",
+    "Databases": "Databases or metadata",
+    "Software Development and IT": "Libraries for version control, continuous integration and continuous delivery",
+    "Error Handling": "response and recovery procedures from error conditions",
+    "Event Handling": "answers to event like listeners",
+    "Geographic Information System": "Geographically referenced information",
+    "Input/Output": "read, write data",
+    "Interpreter": "compiler or interpreter features",
+    "Internationalization": "integrate and infuse international, intercultural, and global dimensions",
+    "Logic": "frameworks, patterns like commands, controls, or architecture-oriented classes",
+    "Language": "internal language features and conversions",
+    "Logging": "log registry for the app",
+    "Machine Learning": "ML support like build a model based on training data",
+    "Microservices/Services": "Independently deployable smaller services. Interface between two different applications so that they can communicate with each other",
+    "Multimedia": "Representation of information with text, audio, video",
+    "Multithread": "Support for concurrent execution",
+    "Natural Language Processing": "Process and analyze natural language data",
+    "Network": "Web protocols, sockets RMI APIs",
+    "Operating System": "APIs to access and manage a computer's resources",
+    "Parser": "Breaks down data into recognized pieces for further analysis",
+    "Search": "API for web searching",
+    "Security": "Crypto and secure protocols",
+    "Setup": "Internal app configurations",
+    "User Interface": "Defines forms, screens, visual controls",
+    "Utility": "third party libraries for general use",
+    "Test": "test automation"
+}
+gpt_response = ask_gpt(description, options)
+counter = 0
+answer = ""
+for chunk in gpt_response:
+    if chunk.choices[0].delta.content:
+        answer += (chunk.choices[0].delta.content.strip('*') or "")
+print(answer)
