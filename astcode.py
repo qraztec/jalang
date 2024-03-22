@@ -2,6 +2,19 @@ import requests
 from bs4 import BeautifulSoup
 import javalang
 import re
+from transformers import pipeline
+import sumy
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
+from sumy.summarizers.luhn import LuhnSummarizer
+#import torch
+from summarizer import Summarizer
+from pprint import pprint
+
+
+
+
 
 JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
 
@@ -189,20 +202,17 @@ def serialize_node(node, parent=None, visited=None):
                 javadoc_methods.append(node.member)
                 #fetches online description
                 first_word = second_dict[qualif]
+
                 second_word = first_dict[first_word]
                 soup = fetch_java_doc(second_word)
                 if soup:
                     description = extract_method_description(soup, node.member, packages[0])
-                    text = f"{javadoc_methods.pop()} - {description}"
-                   # javadoc_methods.pop()
-                    javadoc_methods.append(text)
+                    data = description.replace('\n',"")
+                    main_part = data.split('.', 1)[0]
 
-
-
-
-
-
-
+                   # text = f"{javadoc_methods.pop()} - {description}"
+                    javadoc_methods.pop()
+                    javadoc_methods.append(f"{node.member} - {first_word} - {main_part}")
 
 
 
@@ -267,8 +277,8 @@ print("Identifiers:", identifiers)
 print("Assignments:", assignments)
 print("Literals:", literals)
 print("Methods:", methods)
-print("Javadoc: ", javadocs)
+#print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
-print("First Dict: ", first_dict)
-print("Second Dict: ", second_dict)
+#print("First Dict: ", first_dict)
+#print("Second Dict: ", second_dict)
 #print("Packages Id: ", packages_id)
