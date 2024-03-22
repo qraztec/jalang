@@ -273,28 +273,29 @@ client = Client()
 messages = [
     {"role": "system",
      "content": "You are attempting to classify the inputted description into one of the 31 labels based off of the similarity to it."},
+
     {"role": "system",
-     "content": "As you guess this, your final response should only be one concise paragraph with the label chosen and why."},
-    {"role": "system",
-     "content": "Answer in the format of: Label: given label of this description"
-                                        "Reason: reason why this label was chosen"}
+     "content": "Answer in the format of: Class: Name of the imported class"
+                                        "Label: given label of this description"}
 ]
 
 
-def ask_gpt(class_description, label_options):
-    # Construct the prompt with the object description and option descriptions
-    prompt = "Does this class description: "
-    prompt += f"Object Description: {class_description}\n"
+def classify_class_description(class_name, label_options):
+    # Construct the prompt with the class name and label options
+    prompt = f"Does this class description: Classname: {class_name}\n"
     prompt += " more fit with which of these options: "
     prompt += f"Options: {label_options}\n"
+
+    # Add prompt to messages
     messages.append({"role": "user", "content": prompt})
+
+    # Send the prompt to G4P for classification
     response = client.chat.completions.create(
         model="gpt-4-turbo",
         messages=messages,
         stream=True
     )
     return response
-
 
 # Javax.sql description
 description = "Provides the API for server side data source access and processing from the JavaTM programming language."
@@ -332,10 +333,14 @@ options = {
     "Utility": "third party libraries for general use",
     "Test": "test automation"
 }
-gpt_response = ask_gpt(description, options)
-counter = 0
-answer = ""
-for chunk in gpt_response:
-    if chunk.choices[0].delta.content:
-        answer += (chunk.choices[0].delta.content.strip('*') or "")
-print(answer)
+# Iterate over imported classes and classify each one
+for package_nameAlt in packages:
+    # Classify the class description using G4P
+    g4p_response = classify_class_description(package_nameAlt, options)
+    # Extract the classification result from the response
+    answer = ""
+    for chunk in g4p_response:
+        if chunk.choices[0].delta.content:
+            answer += (chunk.choices[0].delta.content.strip('*') or "")
+    # Print the classification result
+    print(f"Classname: {package_nameAlt}, Label: {answer}")
