@@ -105,7 +105,7 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.Import):
             import_path = node.path
             packages.append(import_path)
-            print(import_path)
+            #print(import_path)
             package_parts = import_path.split(".")
             if len(package_parts) > 1:
                 package_name = package_parts[-2]
@@ -197,7 +197,7 @@ def serialize_node(node, parent=None, visited=None):
                 methods.append(node.member)
             
             elif isinstance(node, javalang.tree.MethodInvocation) and node.qualifier in identifiers:
-                print("qualifier", node.qualifier)
+                #print("qualifier", node.qualifier)
                 qualif = node.qualifier
                 javadoc_methods.append(node.member)
                 #fetches online description
