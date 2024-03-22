@@ -1,5 +1,3 @@
-i = 0
-
 import requests
 from bs4 import BeautifulSoup
 import javalang
