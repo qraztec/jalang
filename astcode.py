@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import javalang
 import re
+import time
 
 JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
 
@@ -266,26 +267,35 @@ print("Javadoc Methods: ", javadoc_methods)
 # print("Packages Id: ", packages_id)
 
 from g4f.client import Client
+from g4f.Provider import You
 
-client = Client()
-messages = [
-    {"role": "system",
-     "content": "You are attempting to classify the inputted description into one of the 31 labels based off of the similarity to it."},
+client = Client(
+    provider=You
+    #api_key = "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"
+)
+# messages = [
+#     {"role": "user",
+#      "content": "You are attempting to classify the inputted description(s) into one of the 31 labels based off of the similarity to it."},
+#
+#     {"role": "user",
+#      "content": "There will be one or more classes to classify. Answer them in the format of: Class: Name of the imported class"
+#                                         "Label: given label of this description"}
+# ]
 
-    {"role": "system",
-     "content": "Answer in the format of: Class: Name of the imported class"
-                                        "Label: given label of this description"}
-]
 
-
-def classify_class_description(class_name, label_options):
+def classify_class_description(packages, label_options):
+    messages = []
     # Construct the prompt with the class name and label options
-    prompt = f"Does this class description: Classname: {class_name}\n"
-    prompt += " more fit with which of these options: "
-    prompt += f"Options: {label_options}\n"
+    for package_nameAlt in packages:
+        prompt = f"Does this class description: Classname: {package_nameAlt}\n"
+        prompt += " more fit with which of these options: "
+        prompt += f"Options: {label_options}\n"
+        prompt += f"Do not respond with any description. Respond exactly in the format: Classname: {package_nameAlt} - Option: [only insert label name]\n"
+        messages.append({"role": "user", "content": prompt})
+        #time.sleep(4)
 
     # Add prompt to messages
-    messages.append({"role": "user", "content": prompt})
+
 
     # Send the prompt to G4P for classification
     response = client.chat.completions.create(
@@ -332,13 +342,17 @@ options = {
     "Test": "test automation"
 }
 # Iterate over imported classes and classify each one
-for package_nameAlt in packages:
+
+#for package_nameAlt in packages:
+
     # Classify the class description using G4P
-    g4p_response = classify_class_description(package_nameAlt, options)
+g4p_response = classify_class_description(packages, options)
     # Extract the classification result from the response
-    answer = ""
-    for chunk in g4p_response:
-        if chunk.choices[0].delta.content:
-            answer += (chunk.choices[0].delta.content.strip('*') or "")
-    # Print the classification result
-    print(f"Classname: {package_nameAlt}, Label: {answer}")
+answer = ""
+
+for chunk in g4p_response:
+    if chunk.choices[0].delta.content:
+        answer += (chunk.choices[0].delta.content.strip('*') or "")
+
+answer = answer.replace("#","")
+print(f"{answer}")
