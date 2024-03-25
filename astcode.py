@@ -18,6 +18,7 @@ literals = []
 methods = []
 javadocs = []
 javadoc_methods = []
+class_labels = []
 
 # mapping dictionaries
 first_dict = dict()
@@ -251,17 +252,7 @@ identifiers_from_comment = extract_identifiers_from_comment(doc_comment)
 # Add detected identifiers to the identifiers list
 identifiers.extend(identifiers_from_comment)
 
-# Print collected information sorted
-print("Packages: ", packages)
-print("Data Types:", datatypes)
-print("Operators:", operators)
-print("Reserved Words:", reserved_words)
-print("Identifiers:", identifiers)
-print("Assignments:", assignments)
-print("Literals:", literals)
-print("Methods:", methods)
-# print("Javadoc: ", javadocs)
-print("Javadoc Methods: ", javadoc_methods)
+
 # print("First Dict: ", first_dict)
 # print("Second Dict: ", second_dict)
 # print("Packages Id: ", packages_id)
@@ -283,15 +274,15 @@ client = Client(
 # ]
 
 
-def classify_class_description(packages, label_options):
+def classify_class_description(package_nameAlt, label_options):
     messages = []
     # Construct the prompt with the class name and label options
-    for package_nameAlt in packages:
-        prompt = f"Does this class description: Classname: {package_nameAlt}\n"
-        prompt += " more fit with which of these options: "
-        prompt += f"Options: {label_options}\n"
-        prompt += f"Do not respond with any description. Respond exactly in the format: Classname: {package_nameAlt} - Option: [only insert label name]\n"
-        messages.append({"role": "user", "content": prompt})
+
+    prompt = f"Does this class description: Classname: {package_nameAlt}\n"
+    prompt += " more fit with which of these options: "
+    prompt += f"Options: {label_options}\n"
+    prompt += f"Do not respond with any description. Respond exactly in the format: Classname: {package_nameAlt} - Label: [only insert label name]\n"
+    messages.append({"role": "user", "content": prompt})
         #time.sleep(4)
 
     # Add prompt to messages
@@ -343,16 +334,30 @@ options = {
 }
 # Iterate over imported classes and classify each one
 
-#for package_nameAlt in packages:
+for package_nameAlt in packages:
 
     # Classify the class description using G4P
-g4p_response = classify_class_description(packages, options)
+    g4p_response = classify_class_description(package_nameAlt, options)
     # Extract the classification result from the response
-answer = ""
+    answer = ""
 
-for chunk in g4p_response:
-    if chunk.choices[0].delta.content:
-        answer += (chunk.choices[0].delta.content.strip('*') or "")
+    for chunk in g4p_response:
+        if chunk.choices[0].delta.content:
+            answer += (chunk.choices[0].delta.content.strip('*') or "")
 
-answer = answer.replace("#","")
-print(f"{answer}")
+    answer = answer.replace("#","")
+    answer = answer.lstrip().split('\n')[0]
+    class_labels.append(answer+ " (AI) ")
+    #print(f"{answer}")
+# Print collected information sorted
+print("Packages: ", packages)
+print("Data Types:", datatypes)
+print("Operators:", operators)
+print("Reserved Words:", reserved_words)
+print("Identifiers:", identifiers)
+print("Assignments:", assignments)
+print("Literals:", literals)
+print("Methods:", methods)
+# print("Javadoc: ", javadocs)
+print("Javadoc Methods: ", javadoc_methods)
+print("Class Labels:", class_labels)
