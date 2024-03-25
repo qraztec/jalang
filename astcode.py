@@ -289,7 +289,7 @@ def classify_class_description(class_name, label_options):
 
     # Send the prompt to G4P for classification
     response = client.chat.completions.create(
-        model="gpt-4-turbo",
+        model="gpt-3.5-turbo",
         messages=messages,
         stream=True
     )
