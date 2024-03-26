@@ -4,6 +4,8 @@ import javalang
 import re
 import time
 
+from javalang.tree import FieldDeclaration
+
 JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
 
 # Lists to be made
@@ -137,6 +139,7 @@ def serialize_node(node, parent=None, visited=None):
 
             var_type = node.type.name
             if var_type in first_dict:
+                #print(node)
                 for declarator in node.declarators:
                     var_name = declarator.name
                     identifiers.append(var_name)
@@ -156,6 +159,27 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node,
                                                                               javalang.tree.ClassDeclaration) or isinstance(
                 node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
+
+            if isinstance(node, javalang.tree.ClassDeclaration):
+
+                for body in node.body:
+                    if isinstance(body, javalang.tree.FieldDeclaration) or isinstance(body, javalang.tree.ConstructorDeclaration):
+                        #print(body)
+                        if hasattr(body, 'modifiers'):
+                            for modifier in body.modifiers:
+                                if modifier in {"public", "private", "protected", "static", "final"}:
+                                    reserved_words.append(modifier)
+                        if hasattr(body, 'declarators'):
+                            if hasattr(body, 'type'):
+                                var_type = body.type.name
+                                #print(var_type)
+                                for declarator in body.declarators:
+                                    if hasattr(declarator, 'name'):
+                                        identifiers.append(declarator.name)
+                                        second_dict[declarator.name] = var_type
+
+
+
             if hasattr(node, 'modifiers'):
                 for modifier in node.modifiers:
                     if modifier in {"public", "private", "protected"}:
@@ -169,6 +193,21 @@ def serialize_node(node, parent=None, visited=None):
             if hasattr(node, 'return_type'):
                 if node.return_type is None:
                     reserved_words.append("void")
+            # if isinstance(node, javalang.tree.VariableDeclarator):
+            #     if hasattr(node, 'name'):
+            #         #print(node.name)
+            #         #print(node)
+            #         if node.name in first_dict:
+            #             print(node.name)
+
+        elif isinstance(node, javalang.tree.TryStatement):
+            reserved_words.append("try")
+            for catch_clause in node.catches:
+                reserved_words.append("catch")
+                # You can also add catch block parameters to identifiers, if needed
+                if catch_clause.parameter:
+                    identifiers.append(catch_clause.parameter.name)
+
         elif isinstance(node, javalang.tree.BinaryOperation):
             operators.append(node.operator)
             ast_node.value = node.operator
@@ -266,7 +305,7 @@ def java_file_to_ast(java_file_path):
 
 
 # Usage example
-root_node = java_file_to_ast('HelloWorld.java')
+root_node = java_file_to_ast('AutosaveManager.java')
 
 # Extract identifiers from Java documentation comments
 doc_comment = """
@@ -334,7 +373,7 @@ options = {
     "Big Data": "Big Data APIs are built to handle massive volumes of data, facilitating the collection, storage, processing, and analysis of large datasets. They are optimized for high velocity, variety, and volume data management, essential in fields such as analytics and machine learning.",
     "Cloud": "Cloud APIs provide access to services hosted on virtual networks, including storage, processing power, and cloud databases. They allow for scalable solutions, with remote accessibility and often follow a pay-as-you-go pricing model for resources consumed.",
     "Computer Graphics": "APIs in computer graphics handle the rendering and manipulation of visual content on the screen. They include functions for drawing shapes, text, and images, enabling the development of visually rich applications and games.",
-    "Data Structure": "Data Structure APIs offer pre-defined models for organizing and storing data. They encapsulate the complexity of data management, offering efficient ways to access, modify, and traverse different forms of data collections (e.g. collections, lists, trees)",
+    "Data Structure": "Data Structure APIs offer pre-defined models for organizing and storing data. They encapsulate the complexity of data management, offering efficient ways to access, modify, and traverse different forms of data collections (e.g. collections, lists, trees, sets, graphs, tables)",
     "Databases": "Database APIs define interfaces for interacting with database management systems. They enable the execution of queries, updates, and transactions on databases, abstracting the complexities of direct database manipulation.",
     "Software Development and IT": "DevOps APIs bridge the gap between software development and IT operations, providing tools for automation, continuous integration, deployment, and monitoring, thereby enabling agile development practices and efficient service delivery.",
     "Error Handling": "These APIs are designed to manage errors systematically, offering structures to detect, capture, and handle exceptions. They provide mechanisms for logging errors and recovering application state to prevent system crashes.",
@@ -423,4 +462,6 @@ print("Methods:", methods)
 # print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
 print("Class Labels:", class_labels)
+#print("first dict:", first_dict)
+#print("second dict:", second_dict)
 #print("Package Description:", package_descs)
