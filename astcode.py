@@ -19,6 +19,7 @@ methods = []
 javadocs = []
 javadoc_methods = []
 class_labels = []
+package_descs = []
 
 # mapping dictionaries
 first_dict = dict()
@@ -49,6 +50,33 @@ def fetch_java_doc(class_name):
     except requests.RequestException as e:
         print(f"Request failed: {e}")
     return None
+
+def extract_class_description(soup):
+    method_anchor = soup.find(lambda tag: tag.name == "div" and tag.get('class') == ['block'])
+
+    if method_anchor:
+        #print("success")
+
+        description_text = ''.join(method_anchor.find_all(string=True, recursive=False)).replace("\n","")
+        #i = 0
+        for p_tag in method_anchor.find_all('p'):
+            # Get only the direct text of each p tag, excluding any text within nested tags
+            pure_text = ''.join(p_tag.find_all(string=True, recursive=False))
+            pure_text = pure_text.replace("\n", "")
+            # Concatenate the pure text to the description_text
+            description_text += pure_text
+
+        # for child in method_anchor.children:
+        #     if child.find('<p>'):
+        #         print(child)
+            # if child.find('p'):
+            #     print("yes")
+            #     description_text += child.string
+            #i += 1
+        # for p_tag in method_anchor.find_all('<p>'):
+        #     description_text += p_tag.get_text(strip=True)
+
+        return description_text
 
 
 # get method description from specific java doc online
@@ -193,13 +221,14 @@ def serialize_node(node, parent=None, visited=None):
                 second_word = first_dict[first_word]
                 soup = fetch_java_doc(second_word)
                 if soup:
-                    description = extract_method_description(soup, node.member, packages[0])
+                    description = extract_method_description(soup, node.member, second_word)
                     data = description.replace('\n', "")
                     main_part = data.split('.', 1)[0]
 
                     # text = f"{javadoc_methods.pop()} - {description}"
                     javadoc_methods.pop()
                     javadoc_methods.append(f"{node.member} - {first_word} - {main_part}")
+                    #package_descs.append(extract_class_description(soup))
 
         if parent:
             parent.add_child(ast_node)
@@ -374,10 +403,12 @@ def find_best_matching_label(package_desc, labels_descriptions):
     best_matching_label = list(labels_descriptions.keys())[highest_sim_index - 1]
 
     return best_matching_label
-package_desc = "A simple text scanner which can parse primitive types and strings using regular expressions. A Scanner breaks its input into tokens using a delimiter pattern, which by default matches whitespace. The resulting tokens may then be converted into values of different types using the various next methods."
+#package_desc = "A simple text scanner which can parse primitive types and strings using regular expressions. A Scanner breaks its input into tokens using a delimiter pattern, which by default matches whitespace. The resulting tokens may then be converted into values of different types using the various next methods."
 
 for i in range(len(packages)):
-    best_label = find_best_matching_label(package_desc, options)
+    soup = fetch_java_doc(packages[i])
+    package_descs.append(extract_class_description(soup))
+    best_label = find_best_matching_label(package_descs[i], options)
     class_labels[i] += f"- Label: {best_label} (Gensim)"
 
 # Print collected information sorted
@@ -392,3 +423,4 @@ print("Methods:", methods)
 # print("Javadoc: ", javadocs)
 print("Javadoc Methods: ", javadoc_methods)
 print("Class Labels:", class_labels)
+#print("Package Description:", package_descs)
