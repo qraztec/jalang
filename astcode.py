@@ -349,6 +349,37 @@ for package_nameAlt in packages:
     answer = answer.lstrip().split('\n')[0]
     class_labels.append(answer+ " (AI) ")
     #print(f"{answer}")
+from gensim import corpora, models, similarities
+from gensim.parsing.preprocessing import preprocess_string
+
+def find_best_matching_label(package_desc, labels_descriptions):
+    documents = [package_desc] + list(labels_descriptions.values())
+    texts = [preprocess_string(doc) for doc in documents]
+
+    dictionary = corpora.Dictionary(texts)
+    corpus = [dictionary.doc2bow(text) for text in texts]
+
+    tfidf = models.TfidfModel(corpus)
+    corpus_tfidf = tfidf[corpus]
+
+    index = similarities.MatrixSimilarity(corpus_tfidf)
+
+    package_vec = dictionary.doc2bow(preprocess_string(package_desc))
+    package_tfidf = tfidf[package_vec]
+
+    sims = index[package_tfidf]
+    sims = list(enumerate(sims))[1:]  # Skip the package itself
+
+    highest_sim_index, _ = max(sims, key=lambda item: item[1])
+    best_matching_label = list(labels_descriptions.keys())[highest_sim_index - 1]
+
+    return best_matching_label
+package_desc = "A simple text scanner which can parse primitive types and strings using regular expressions. A Scanner breaks its input into tokens using a delimiter pattern, which by default matches whitespace. The resulting tokens may then be converted into values of different types using the various next methods."
+
+for i in range(len(packages)):
+    best_label = find_best_matching_label(package_desc, options)
+    class_labels[i] += f"- Label: {best_label} (Gensim)"
+
 # Print collected information sorted
 print("Packages: ", packages)
 print("Data Types:", datatypes)
