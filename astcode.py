@@ -139,7 +139,7 @@ def serialize_node(node, parent=None, visited=None):
 
             var_type = node.type.name
             if var_type in first_dict:
-                print(node)
+                #print(node)
                 for declarator in node.declarators:
                     var_name = declarator.name
                     identifiers.append(var_name)
@@ -159,11 +159,16 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.VariableDeclarator) or isinstance(node,
                                                                               javalang.tree.ClassDeclaration) or isinstance(
                 node, javalang.tree.MethodDeclaration) or isinstance(node, javalang.tree.FormalParameter):
-            #print(node)
+
             if isinstance(node, javalang.tree.ClassDeclaration):
+
                 for body in node.body:
                     if isinstance(body, javalang.tree.FieldDeclaration) or isinstance(body, javalang.tree.ConstructorDeclaration):
                         #print(body)
+                        if hasattr(body, 'modifiers'):
+                            for modifier in body.modifiers:
+                                if modifier in {"public", "private", "protected", "static", "final"}:
+                                    reserved_words.append(modifier)
                         if hasattr(body, 'declarators'):
                             if hasattr(body, 'type'):
                                 var_type = body.type.name
@@ -194,6 +199,14 @@ def serialize_node(node, parent=None, visited=None):
             #         #print(node)
             #         if node.name in first_dict:
             #             print(node.name)
+
+        elif isinstance(node, javalang.tree.TryStatement):
+            reserved_words.append("try")
+            for catch_clause in node.catches:
+                reserved_words.append("catch")
+                # You can also add catch block parameters to identifiers, if needed
+                if catch_clause.parameter:
+                    identifiers.append(catch_clause.parameter.name)
 
         elif isinstance(node, javalang.tree.BinaryOperation):
             operators.append(node.operator)
