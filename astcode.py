@@ -489,13 +489,17 @@ def go_On(root):
     #print("Package Description:", package_descs)
 def main():
     while (1):
-        userInput = input(
-            "\nPlease Enter a java file: HelloWorld.java | AutosaveManager.java \nBindingsHelper.java | DefaultLatexParser.java | FieldFactory.java\nTicTacToe.java OR ENTER exit:\n")
-        if (userInput == "exit"):
-            print("Exiting the program")
-            sys.exit()
-        root_node = java_file_to_ast(userInput)
-        go_On(root_node)
+        try:
+            userInput = input(
+                "\nPlease Enter a java file: HelloWorld.java | AutosaveManager.java \nBindingsHelper.java | DefaultLatexParser.java | FieldFactory.java\nTicTacToe.java OR ENTER exit:\n")
+            if (userInput == "exit"):
+                print("Exiting the program")
+                sys.exit()
+
+            root_node = java_file_to_ast(userInput)
+            go_On(root_node)
+        except Exception as e:
+            print("An error ocurred", e)
 if __name__ == "__main__":
     main()
 
