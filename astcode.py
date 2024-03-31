@@ -54,8 +54,7 @@ def fetch_java_doc(class_name):
                 if class_name.startswith(pkg + "."):
                     #   print("Worked")
                     return BeautifulSoup(response.text, 'html.parser')
-                else:
-                    return None
+
         else:
             print(f"Failed to fetch JavaDoc for {class_name}")
     except requests.RequestException as e:
