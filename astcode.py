@@ -8,6 +8,7 @@ import time
 from javalang.tree import FieldDeclaration
 
 JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
+JAVA_FX_URL = "https://docs.oracle.com/javase/8/javafx/api/"
 
 # Lists to be made
 packages = []
@@ -42,10 +43,14 @@ class ASTNode:
 
 # fetch java documentation from internet and check if can request it
 def fetch_java_doc(class_name):
-    url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.', '/')}.html"
     packages_list = ["java.util", "java.lang", "java.math", "java.io", "java.nio",
-                "java.net", "java.util.concurrent", "javax.swing", "java.awt",
-                "java.sql", "javax.xml", "java.security"]
+                     "java.net", "java.util.concurrent", "javax.swing", "java.awt",
+                     "java.sql", "javax.xml", "java.security", "javafx"]
+    if class_name.startswith("javafx."):
+        url = f"{JAVA_FX_URL}/{class_name.replce('.','/')}.html"
+    else:
+        url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.', '/')}.html"
+
     #print(class_name)
     try:
         response = requests.get(url)
