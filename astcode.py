@@ -5,6 +5,7 @@ import re
 import sys
 import time
 
+
 from javalang.tree import FieldDeclaration
 
 JAVA_DOC_BASE_URL = "https://docs.oracle.com/javase/8/docs/api/"
@@ -47,7 +48,7 @@ def fetch_java_doc(class_name):
                      "java.net", "java.util.concurrent", "javax.swing", "java.awt",
                      "java.sql", "javax.xml", "java.security", "javafx"]
     if class_name.startswith("javafx."):
-        url = f"{JAVA_FX_URL}/{class_name.replce('.','/')}.html"
+        url = f"{JAVA_FX_URL}/{class_name.replace('.','/')}.html"
     else:
         url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.', '/')}.html"
 
@@ -55,8 +56,9 @@ def fetch_java_doc(class_name):
     try:
         response = requests.get(url)
         if response.status_code == 200:
+
             for pkg in packages_list:
-                if class_name.startswith(pkg + "."):
+                if class_name.startswith(pkg + ".") and class_name.count('.') > 1:
                     #   print("Worked")
                     return BeautifulSoup(response.text, 'html.parser')
 
@@ -346,7 +348,7 @@ def go_On(root):
     # print("Packages Id: ", packages_id)
 
     from g4f.client import Client
-    from g4f.Provider import You
+    from g4f.Provider import You, GptGo, GptForLove, ChatBase, Chatgpt4Online
 
     client = Client(
         provider=You
@@ -436,7 +438,9 @@ def go_On(root):
         answer = answer.replace("#","")
         answer = answer.lstrip().split('\n')[0]
         class_labels.append(answer+ " (AI) ")
-        #print(f"{answer}")
+    #     #print(f"{answer}")
+
+
     from gensim import corpora, models, similarities
     from gensim.parsing.preprocessing import preprocess_string
 
