@@ -499,7 +499,7 @@ def main():
     while (1):
         try:
             userInput = input(
-                "\nPlease Enter a java file: HelloWorld.java | AutosaveManager.java \nBindingsHelper.java | DefaultLatexParser.java | FieldFactory.java\nTicTacToe.java OR ENTER exit:\n")
+                "\nPlease Enter a java file: HelloWorld.java | AutosaveManager.java \nBindingsHelper.java | DefaultLatexParser.java | FieldFactory.java\nTicTacToe.java | CrossRef.java | DefaultTexParserTest.java\n OR ENTER exit:\n")
             if (userInput == "exit"):
                 print("Exiting the program")
                 sys.exit()
