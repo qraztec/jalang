@@ -54,7 +54,6 @@ def fetch_java_doc(class_name):
     else:
         url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.', '/')}.html"
 
-    #print(class_name)
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -74,8 +73,6 @@ def extract_class_description(soup):
     method_anchor = soup.find(lambda tag: tag.name == "div" and tag.get('class') == ['block'])
 
     if method_anchor:
-        #print("success")
-
         description_text = ''.join(method_anchor.find_all(string=True, recursive=False)).replace("\n","")
         #i = 0
         for p_tag in method_anchor.find_all('p'):
@@ -85,16 +82,6 @@ def extract_class_description(soup):
             # Concatenate the pure text to the description_text
             description_text += pure_text
 
-        # for child in method_anchor.children:
-        #     if child.find('<p>'):
-        #         print(child)
-            # if child.find('p'):
-            #     print("yes")
-            #     description_text += child.string
-            #i += 1
-        # for p_tag in method_anchor.find_all('<p>'):
-        #     description_text += p_tag.get_text(strip=True)
-
         return description_text
 
 
@@ -103,8 +90,6 @@ def extract_method_description(soup, method_name, class_name):
     method_anchor = soup.find(lambda tag: tag.name == "h4" and tag.text == f"{method_name}")
 
     if method_anchor:
-        #  print("success")
-
         common_parent = method_anchor.find_parent().find_parent()
         description = method_anchor.find_next('div', class_="block")
         description_text = ""
@@ -142,7 +127,7 @@ def serialize_node(node, parent=None, visited=None):
         elif isinstance(node, javalang.tree.Import):
             import_path = node.path
             packages.append(import_path)
-            # print(import_path)
+
             package_parts = import_path.split(".")
             if len(package_parts) > 1:
                 package_name = package_parts[-2]
@@ -152,7 +137,7 @@ def serialize_node(node, parent=None, visited=None):
                 packages_id.append(package_name)
                 # print(package_name)
         elif isinstance(node, javalang.tree.LocalVariableDeclaration):
-            # identifiers.append(node.name)  # adds all identifiers
+
 
             var_type = node.type.name
             if var_type in first_dict:
@@ -161,9 +146,7 @@ def serialize_node(node, parent=None, visited=None):
                     var_name = declarator.name
                     identifiers.append(var_name)
 
-                    # if var_type in first_dict:
-                    #  second_dict[var_name] = var_type
-                    #  var_type = first_dict[var_type]
+
                     second_dict[var_name] = var_type
             '''
             if hasattr(node, 'type'):
@@ -202,7 +185,7 @@ def serialize_node(node, parent=None, visited=None):
                     if modifier in {"public", "private", "protected"}:
                         reserved_words.append(modifier)
 
-            # identifiers.append(node.name) #adds all identifiers
+
 
             if hasattr(node, 'modifiers'):
                 if "static" in node.modifiers:
@@ -210,12 +193,7 @@ def serialize_node(node, parent=None, visited=None):
             if hasattr(node, 'return_type'):
                 if node.return_type is None:
                     reserved_words.append("void")
-            # if isinstance(node, javalang.tree.VariableDeclarator):
-            #     if hasattr(node, 'name'):
-            #         #print(node.name)
-            #         #print(node)
-            #         if node.name in first_dict:
-            #             print(node.name)
+
 
         elif isinstance(node, javalang.tree.TryStatement):
             reserved_words.append("try")
@@ -273,9 +251,7 @@ def serialize_node(node, parent=None, visited=None):
                 qualif = node.qualifier
                 javadoc_methods.append(node.member)
                 # fetches online description
-                #print(qualif)
-                #print(second_dict)
-                #print(identifiers)
+
                 if qualif in second_dict:
                     first_word = second_dict[qualif]
 
@@ -424,26 +400,6 @@ def go_On(root):
         "Utility": "Utility APIs provide a collection of helper functions that are commonly used across various types of applications. They offer generalized solutions for routine programming tasks, such as data manipulation, text processing, and mathematical calculations.",
         "Test": "Test APIs facilitate automated testing of software components. They provide frameworks for unit testing, integration testing, system testing, and acceptance testing, aiming to ensure that code changes do not break existing functionalities."
     }
-    # Iterate over imported classes and classify each one
-    '''
-    for package_nameAlt in packages:
-
-        # Classify the class description using G4P
-        g4p_response = classify_class_description(package_nameAlt, options)
-        # Extract the classification result from the response
-        answer = ""
-
-        for chunk in g4p_response:
-            if chunk.choices[0].delta.content:
-                answer += (chunk.choices[0].delta.content.strip('*') or "")
-
-        answer = answer.replace("#","")
-        answer = answer.lstrip().split('\n')[0]
-        class_labels.append(answer+ " (AI) ")
-        '''
-    #     #print(f"{answer}")
-
-
     from gensim import corpora, models, similarities
     from gensim.parsing.preprocessing import preprocess_string
 
@@ -526,5 +482,3 @@ def main():
             print("An error ocurred", e)
 if __name__ == "__main__":
     main()
-
-#userInput = input("Please Enter a java file: HelloWorld.java | AutosaveManager.java \nBindingsHelper.java | DefaultLatexParser.java | FieldFactory.java\nTicTacToe.java OR ENTER exit:\n")
