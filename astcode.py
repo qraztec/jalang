@@ -44,10 +44,12 @@ class ASTNode:
 
 # fetch java documentation from internet and check if can request it
 def fetch_java_doc(class_name):
+    #print(class_name)
     packages_list = ["java.util", "java.lang", "java.math", "java.io", "java.nio",
                      "java.net", "java.util.concurrent", "javax.swing", "java.awt",
                      "java.sql", "javax.xml", "java.security", "javafx"]
     if class_name.startswith("javafx."):
+        #print(class_name)
         url = f"{JAVA_FX_URL}/{class_name.replace('.','/')}.html"
     else:
         url = f"{JAVA_DOC_BASE_URL}/{class_name.replace('.', '/')}.html"
@@ -423,7 +425,7 @@ def go_On(root):
         "Test": "Test APIs facilitate automated testing of software components. They provide frameworks for unit testing, integration testing, system testing, and acceptance testing, aiming to ensure that code changes do not break existing functionalities."
     }
     # Iterate over imported classes and classify each one
-
+    '''
     for package_nameAlt in packages:
 
         # Classify the class description using G4P
@@ -438,6 +440,7 @@ def go_On(root):
         answer = answer.replace("#","")
         answer = answer.lstrip().split('\n')[0]
         class_labels.append(answer+ " (AI) ")
+        '''
     #     #print(f"{answer}")
 
 
@@ -478,7 +481,20 @@ def go_On(root):
             package_desc = extract_class_description(soup)
             package_descs.append(package_desc)
             best_label = find_best_matching_label(package_desc, options)
-            class_labels[i] += f"- Label: {best_label} (Gensim)"
+            #class_labels[i] += f"- Label: {best_label} (Gensim)"
+
+            g4p_response = classify_class_description(packages[i], options)
+            # Extract the classification result from the response
+            answer = ""
+
+            for chunk in g4p_response:
+                if chunk.choices[0].delta.content:
+                    answer += (chunk.choices[0].delta.content.strip('*') or "")
+
+            answer = answer.replace("#", "")
+            answer = answer.lstrip().split('\n')[0]
+
+            class_labels.append(f"{answer} (AI) - Label: {best_label} (Gensim)")
 
     # Print collected information sorted
     print("Packages: ", packages)
