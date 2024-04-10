@@ -434,11 +434,13 @@ def go_On(root):
         soup = fetch_java_doc(packages[i])
         if soup:
             #print(packages[i])
+
             package_desc = extract_class_description(soup)
             package_descs.append(package_desc)
             best_label = find_best_matching_label(package_desc, options)
             #class_labels[i] += f"- Label: {best_label} (Gensim)"
-
+            #below is commented out to remove chatgpt feature
+            '''
             g4p_response = classify_class_description(packages[i], options)
             # Extract the classification result from the response
             answer = ""
@@ -449,7 +451,8 @@ def go_On(root):
 
             answer = answer.replace("#", "")
             answer = answer.lstrip().split('\n')[0]
-
+            '''
+            answer = "ClassName: Scanner - Label: Placeholder"
             class_labels.append(f"{answer} (AI) - Label: {best_label} (Gensim)")
 
     # Print collected information sorted
