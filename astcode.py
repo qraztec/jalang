@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import javalang
 import re
 import sys
+import psycopg2
 import time
 
 
@@ -25,6 +26,7 @@ javadocs = []
 javadoc_methods = []
 class_labels = []
 package_descs = []
+javadoc_methods_secret = []
 
 # mapping dictionaries
 first_dict = dict()
@@ -267,6 +269,8 @@ def serialize_node(node, parent=None, visited=None):
                     # text = f"{javadoc_methods.pop()} - {description}"
                             javadoc_methods.pop()
                             javadoc_methods.append(f"{node.member} - {first_word} - {main_part}")
+                            javadoc_methods_secret.append(f"{node.member}.{main_part}.{first_word}")
+
                     #package_descs.append(extract_class_description(soup))
 
         if parent:
@@ -303,9 +307,84 @@ def java_file_to_ast(java_file_path):
 
     return root_node
 
+def connect_db():
+    try:
+        connection = psycopg2.connect(
+            dbname="postgres",
+            user="postgres",
+            password="crumlin",
+            host="127.0.0.1"
+        )
+        return connection
+    except Exception as e:
+        print(f"An error occurred while connecting to the database: {e}")
+        return None
+def create_tables():
+    connection = connect_db()
+    cursor = connection.cursor()
+    try:
+        # Create table 1
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS class_table (
+            classname VARCHAR(255) PRIMARY KEY,
+            ai_answer TEXT,
+            gensim_answer TEXT,
+            class_description TEXT
+        );
+        """)
+
+        # Create table 2
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS function_table (
+            id SERIAL PRIMARY KEY,
+            function_name VARCHAR(255),
+            classname VARCHAR(255),
+            function_description TEXT,
+            FOREIGN KEY (classname) REFERENCES class_table(classname),
+            UNIQUE (function_name, classname)
+        );
+        """)
+        connection.commit()
+    except Exception as e:
+        print(f"{e}")
+    finally:
+        cursor.close()
+        connection.close()
+def insert_into_class_table(classname, class_description, ai_answer, gensim_answer):
+    connection = connect_db()
+    cursor = connection.cursor()
+    try:
+        cursor.execute("""
+        INSERT INTO class_table (classname, ai_answer, gensim_answer, class_description)
+        VALUES (%s, %s, %s, %s);
+        """, (classname, ai_answer, gensim_answer, class_description))
+
+        connection.commit()
+
+    except Exception as e:
+        print(f"{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+def insert_into_function_table(function_name, function_description, classname):
+    connection = connect_db()
+    cursor = connection.cursor()
+    try:
+        cursor.execute("""
+        INSERT INTO function_table (function_name, classname, function_description)
+        VALUES (%s, %s, %s);
+        """, (function_name, classname, function_description))
+        connection.commit()
+    except Exception as e:
+        print(f"{e}")
+    finally:
+        cursor.close()
+        connection.close()
 
 # Usage example
 def go_On(root):
+    create_tables()
 
     # Extract identifiers from Java documentation comments
     doc_comment = """
@@ -440,7 +519,7 @@ def go_On(root):
             best_label = find_best_matching_label(package_desc, options)
             #class_labels[i] += f"- Label: {best_label} (Gensim)"
             #below is commented out to remove chatgpt feature
-            '''
+
             g4p_response = classify_class_description(packages[i], options)
             # Extract the classification result from the response
             answer = ""
@@ -451,10 +530,16 @@ def go_On(root):
 
             answer = answer.replace("#", "")
             answer = answer.lstrip().split('\n')[0]
-            '''
-            answer = "ClassName: Scanner - Label: Placeholder"
-            class_labels.append(f"{answer} (AI) - Label: {best_label} (Gensim)")
-
+            answer2 = answer.split(':')[-1].strip().strip("'")
+            pkgname = packages[i].split('.')[-1]
+            class_labels.append(f"Classname: {pkgname} - Label: {answer2} (AI) - Label: {best_label} (Gensim)")
+            insert_into_class_table(pkgname, package_desc, answer2, best_label)
+    for method in javadoc_methods_secret:
+        method = method.split('.')
+        if len(method) == 3:
+            insert_into_function_table(method[0],method[1],method[2])
+        else:
+            insert_into_function_table(method[0],"None","None")
     # Print collected information sorted
     print("Packages: ", packages)
     print("Data Types:", datatypes)
@@ -470,6 +555,9 @@ def go_On(root):
     #print("first dict:", first_dict)
     #print("second dict:", second_dict)
     #print("Package Description:", package_descs)
+
+    #insert_into_class_table("a","a","a","a")
+    #insert_into_function_table("a","a",1)
 def main():
     while (1):
         try:
